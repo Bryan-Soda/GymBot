@@ -1,4 +1,4 @@
-# bot.py
+# Gymbot.py
 import os
 import discord
 import random

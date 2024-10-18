@@ -26,6 +26,6 @@ async def on_ready():
             )
 @bot.command()
 async def test(ctx):
-    await ctx.send("command evoked :3")
+    await ctx.send("command evoked")
 
 bot.run(TOKEN)

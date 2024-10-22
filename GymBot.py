@@ -42,12 +42,12 @@ async def moo(ctx):
 async def embed(ctx):
     embed=discord.Embed(
     title="Text Formatting",
-        url="{url}",
+        #url="url",
         description="Here are some ways to format text",
         color=discord.Color.blue())
-    embed.set_author(name="Bot", url="{url}", icon_url="{urlimage}")
-    #embed.set_author(name=ctx.author.display_name, url="https://twitter.com/RealDrewData", icon_url=ctx.author.avatar_url)
-    embed.set_thumbnail(url="{urlimage}")
+    #embed.set_author(name="Bot", url="url", icon_url="urlimage")
+    #embed.set_author(name=ctx.author.display_name, url="url", icon_url=ctx.author.avatar_url)
+    #embed.set_thumbnail(url="{urlimage}")
     embed.add_field(name="*Italics*", value="Surround your text in asterisks ()", inline=False)
     embed.add_field(name="**Bold**", value="Surround your text in double asterisks ()", inline=False)
     embed.add_field(name="__Underline__", value="Surround your text in double underscores (\_\_)", inline=False)

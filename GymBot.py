@@ -8,6 +8,8 @@ from discord.ext import commands
 
 load_dotenv()
 
+
+
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
@@ -16,6 +18,18 @@ intents.messages = True
 intents.members = True
 intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
+
+class Leaderboard:
+    def __init__(self):
+        self.people = []
+
+    def update(self, members):
+        self.people.clear()
+        self.people.extend(members)
+
+board = Leaderboard()
+users = []
+
 @bot.event
 async def on_ready():
     for guild in bot.guilds:
@@ -24,9 +38,11 @@ async def on_ready():
                 f'{bot.user} is connected to the following guild:\n'
                 f'{guild.name}(id: {guild.id})'
             )
-        elif guild.name != GUILD:
-            print(f'{bot.user} is being dmed')
-
+        users.clear()
+        for member in guild.members:
+            users.append(member.name)
+    board.update(users)
+    print(board.people)
 @bot.command()
 async def test(ctx):
     await ctx.send("command evoked")
@@ -42,11 +58,11 @@ async def moo(ctx):
 async def embed(ctx):
     embed=discord.Embed(
     title="Text Formatting",
-        #url="url",
+        #url="{url}",
         description="Here are some ways to format text",
         color=discord.Color.blue())
-    #embed.set_author(name="Bot", url="url", icon_url="urlimage")
-    #embed.set_author(name=ctx.author.display_name, url="url", icon_url=ctx.author.avatar_url)
+    #embed.set_author(name="Bot", url="{url}", icon_url="{urlimage}")
+    #embed.set_author(name=ctx.author.display_name, url="https://twitter.com/RealDrewData", icon_url=ctx.author.avatar_url)
     #embed.set_thumbnail(url="{urlimage}")
     embed.add_field(name="*Italics*", value="Surround your text in asterisks ()", inline=False)
     embed.add_field(name="**Bold**", value="Surround your text in double asterisks ()", inline=False)
@@ -57,5 +73,6 @@ async def embed(ctx):
     embed.add_field(name="Secrets", value="||Surround your text with double pipes (\|\|)||", inline=False)
     embed.set_footer(text="Foot")
     await ctx.send(embed=embed)
-#@bot.command()
+#@bot.event
+    
 bot.run(TOKEN)

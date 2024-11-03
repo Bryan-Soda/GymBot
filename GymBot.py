@@ -8,17 +8,6 @@ from discord.ext import commands
 
 load_dotenv()
 
-
-
-TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
-
-intents = discord.Intents.default() 
-intents.messages = True
-intents.members = True
-intents.message_content = True
-bot = commands.Bot(command_prefix='!', intents=intents)
-
 class Leaderboard:
     def __init__(self):
         self.people = []
@@ -27,11 +16,29 @@ class Leaderboard:
         self.people.clear()
         self.people.extend(members)
 
+async def update_channel():
+    channel = bot.get_channel(LEADERBAORD_CHANNEL_ID)
+    await channel.purge()
+
+TOKEN = os.getenv('DISCORD_TOKEN')
+GUILD = os.getenv('DISCORD_GUILD')
+#These IDs will correspond to your own channel IDs
+BOT_CHANNEL_ID = 1302693228105039974
+LEADERBAORD_CHANNEL_ID = 1302700107871027233
+
+intents = discord.Intents.default() 
+intents.messages = True
+intents.members = True
+intents.message_content = True
+bot = commands.Bot(command_prefix='!', intents=intents)
 board = Leaderboard()
 users = []
 
 @bot.event
+
 async def on_ready():
+    botChannel = bot.get_channel(BOT_CHANNEL_ID)
+    LeaderboardChannel = bot.get_channel(LEADERBAORD_CHANNEL_ID)
     for guild in bot.guilds:
         if guild.name == GUILD:
             print(
@@ -41,14 +48,33 @@ async def on_ready():
         users.clear()
         for member in guild.members:
             users.append(member.name)
+    #Bot shows announces it is online
+    if botChannel:
+        await botChannel.send("I AM ALIVE")
+    else:
+        print("Channel does not exist")
+    #Old Leaderboards are cleared  
+    if LeaderboardChannel:
+        await update_channel() 
+        #!Display a new leaderbaord  
     board.update(users)
     print(board.people)
+
+#test commands
 @bot.command()
 async def test(ctx):
     await ctx.send("command evoked")
+#moo command: sends a cow gif
 @bot.command()
+@commands.cooldown(1, 5, commands.BucketType.user)
 async def moo(ctx):
     await ctx.send("http://imgur.com/gallery/YiMUiop")     
+#error handling
+@moo.error
+async def moo_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        await ctx.send(f"you are on cooldown! Try again in {round(error.retry_after, 2)} seconds")
+
 # @bot.command()
 # async def sendpr(ctx):
 #     await ctx.

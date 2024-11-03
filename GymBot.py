@@ -2,11 +2,16 @@
 import os
 import discord
 import random
+import sqlite3
 from dotenv import load_dotenv
 from discord import Intents, Client, Message
 from discord.ext import commands
 
 load_dotenv()
+#sqlite database setup
+database = sqlite3.connect('lifts.db')
+cursor = database.cursor()
+database.execute("CREATE TABLE IF NOT EXISTS lifts(user STRING, is_squat INT, is_bench INT, is_deadlift INT, pr INT)")
 
 class Leaderboard:
     def __init__(self):
@@ -61,9 +66,17 @@ async def on_ready():
     print(board.people)
 
 #test commands
-@bot.command()
-async def test(ctx):
-    await ctx.send("command evoked")
+##/squat command allows user to input their squat pr
+@bot.slash_command(name="squat", description="input squat PR")
+async def squat(ctx, pr: int):
+    user = ctx.author
+    #database input response chunk
+    query = "INSERT INTO lifts VALUES (?, ?, ?, ?, ?)"
+    cursor.execute(query, (str(user.name), 1, 0, 0, pr))
+    database.commit() #save function of the database :p
+    
+    await ctx.respond(f"{user.name} has inputted {pr} Lbs. as their squat PR!")
+
 #moo command: sends a cow gif
 @bot.command()
 @commands.cooldown(1, 5, commands.BucketType.user)

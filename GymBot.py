@@ -28,8 +28,8 @@ async def update_channel():
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 #These IDs will correspond to your own channel IDs
-BOT_CHANNEL_ID = 1302693228105039974
-LEADERBAORD_CHANNEL_ID = 1302700107871027233
+BOT_CHANNEL_ID = #ChannelIDNumber
+LEADERBAORD_CHANNEL_ID = #ChannelIDNumber
 
 intents = discord.Intents.default() 
 intents.messages = True
